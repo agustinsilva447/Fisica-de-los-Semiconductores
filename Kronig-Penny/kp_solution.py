@@ -1,24 +1,24 @@
 import numpy as np
 
-def KPM_Soln(a,b,U0,eps_range):  #input a, b spacing in Angstoms, potential in eV, and total desired range to output
-    #Constants
+def KPM_Soln(a,b,U0,eps_range): # entrada a, b espaciado en Angstroms, potencial en eV y rango total deseado para la salida
+    # constantes
     h_bar = 1.054*1e-34    #J*s
     m = 9.109*1e-31        #kg
     alpha_0 = (2*m*U0*1.602*1e-19/h_bar**2)**(1/2)  #m^-1
 
-    #Kronig-Penny Solution (LHS),  with epsilon = E/U0
-    def KPM_p(eps):  #for epsilon > 1
+    # Kronig-Penny Solution (LHS), con épsilon = E/U0
+    def KPM_p(eps):  # para epsilon > 1
         return (1-2*eps)/(2*(eps*(eps-1))**(1/2))*np.sin(alpha_0*a*1e-10*eps**(1/2))*np.sin(alpha_0*b*1e-10*(eps-1)**(1/2))+np.cos(alpha_0*a*1e-10*eps**(1/2))*np.cos(alpha_0*b*1e-10*(eps-1)**(1/2))
-    def KPM_m(eps):  #for epison < 1
+    def KPM_m(eps):  # para epison < 1
         return (1-2*eps)/(2*(eps*(1-eps))**(1/2))*np.sin(alpha_0*a*1e-10*eps**(1/2))*np.sinh(alpha_0*b*1e-10*(1-eps)**(1/2))+np.cos(alpha_0*a*1e-10*eps**(1/2))*np.cosh(alpha_0*b*1e-10*(1-eps)**(1/2))
 
-    #Define epsilon space to plot
+    # Definir el espacio épsilon para graficar
     epslist = np.linspace(0,eps_range,200000)
     f_eps = np.piecewise(epslist, [epslist < 1, epslist > 1], [KPM_m, KPM_p])
     
     return epslist, f_eps
 
-def Eband_KP(epslist,f_eps): #outputs energy band data
+def Eband_KP(epslist,f_eps): # datos de la banda de energía
     k=[]
     bandlist=[]
     Eps=[]
